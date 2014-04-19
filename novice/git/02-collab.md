@@ -293,3 +293,5 @@ to share work between different people and machines.
     How does GitHub record times, and why?
 
 </div>
+
+Next: <a href="{{site.github.url}}/novice/git/03-conflict.html">Resolving conflicts</a>

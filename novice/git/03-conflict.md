@@ -357,3 +357,5 @@ or find a way to divide the work up differently.
     that is stored in version control?
 
 </div>
+
+Next: <a href="{{site.github.url}}/novice/git/04-open.html">About licenses</a>

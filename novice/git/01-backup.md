@@ -974,3 +974,5 @@ nothing to commit, working directory clean
     Why is it a bad idea to do this?
 
 </div>
+
+Next: <a href="{{site.github.url}}/novice/git/02-collab.html">Collaborating</a>
