@@ -76,7 +76,7 @@ and run this command:
 
 <div class="in" markdown="1">
 ~~~
-$ git remote add origin https://github.com/vlad/planets
+$ git remote add origin https://github.com/vlad/planets.git
 ~~~
 </div>
 
@@ -126,6 +126,8 @@ Branch master set up to track remote branch master from origin.
 Our local and remote repositories are now in this state:
 
 <img src="img/github-repo-after-first-push.svg" alt="GitHub Repository After First Push" />
+
+Go have a look at github, you should now be able to see mars.txt there.
 
 > #### The '-u' Flag
 >
