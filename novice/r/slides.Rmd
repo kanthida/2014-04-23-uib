@@ -1,0 +1,90 @@
+
+### So, what is R?
+
+* R is a versatile, open source programming language
+* It's particularly well suited for statistics, data science and visualization
+* Widely used in academia and industry, with a growing community.
+* Huge library of user contributed problem-specific packages, > 5,000 at this time. 
+* Biology-specific packages via Bioconductor
+* Available on all platforms.
+* Is object oriented and functional.  
+
+---
+
+###Challenge
+
+Write down what values the variables refer to after each statement in the following program:
+
+```{r}  
+mass <- 47.5
+age  <- 122
+mass <- mass * 2.0
+age  <- age - 20
+```
+
+---
+
+### Data structures
+
+R has many __data structures__. These include
+
+* atomic vector
+* list
+* matrix
+* data frame
+* factors
+
+---
+
+### Vectors
+
+A vector is the most common and basic data structure in R, and is pretty much the workhorse of R.
+
+Technically, vectors can be one of two types:
+
+* atomic vectors
+* lists
+
+although the term "vector" most commonly refers to the atomic types not lists.
+
+---
+
+### Atomic Vectors
+
+By *atomic*, we mean the vector only holds data of a single type.
+ 
+ * **character**: `"a"`, `"swc"`
+ * **numeric**: `2`, `15.5`
+ * **integer**: `2L` (the `L` tells R to store this as an integer)
+ * **logical**: `TRUE`, `FALSE`
+ * **complex**: `1+4i` (complex numbers with real and imaginary parts)
+ 
+---
+
+### EXERCISE selecting data
+
+1. If data holds our gapminder information, what does `data[3:3, 4:4]` produce? 
+What about `data[4:1,]`? Explain the results to the person sitting next to you
+
+---
+
+### Exercise apply
+
+1. Find the maximum and minimum values for population each year.
+2. Save these values to two varibles (one for min, one for max).
+3. What kind of variables are these?
+
+---
+
+### Exercise plot
+
+Plot the gdp per capita (gdpPerCap) as a function of time, for european countries
+
+---
+
+### Exercise Functions
+
+As we've seen in our print statements, we can use `paste` to concatenate strings, `paste(a, b, sep = "")` is `ab`. __Note__: the `sep` can be an important value to define! What is the default? What can `sep` be?
+
+1. Write a function called `fence` that takes two parameters called `original` and `wrapper` and returns a new string that has the `wrapper` character at the beginning and end of the `original`:
+

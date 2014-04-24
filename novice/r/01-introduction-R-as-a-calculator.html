@@ -186,7 +186,7 @@ hljs.initHighlightingOnLoad();
 <p>This material combines materials from the Sofware Carpentry Bootcamp novice course
 with slides from the interactive Swirl package (Nick Carchedi et al) <a href="https://github.com/swirldev/">https://github.com/swirldev/</a></p>
 
-<h3>The very basics of R</h3>
+<h3>So, what is R?</h3>
 
 <ul>
 <li>R is a versatile, open source programming language</li>
@@ -198,8 +198,6 @@ with slides from the interactive Swirl package (Nick Carchedi et al) <a href="ht
 <li>Is object oriented and functional.<br/></li>
 </ul>
 
-<hr/>
-
 <h3>Introduction to R and RStudio</h3>
 
 <p><em>Point out the different windows in RStudio</em></p>
@@ -210,48 +208,9 @@ with slides from the interactive Swirl package (Nick Carchedi et al) <a href="ht
 <li>Our end goal is not just to &ldquo;do stuff&rdquo; but to do it in a way that anyone can easily and exactly replicate our workflow and results.</li>
 </ul>
 
-<hr/>
+<p>In it&#39;s simplest form, R can be used as an interactive calculator. On the R console, type 5 + 7 and press Enter.</p>
 
-<h3>First commands in R</h3>
-
-<p>Some of the same commands we learned from the command line can be used in R. 
-List objects in your current environment</p>
-
-<pre><code class="r">ls()
-</code></pre>
-
-<p>Remove objects from your current environment.  </p>
-
-<pre><code class="r">x &lt;- 5
-rm(x)
-</code></pre>
-
-<p>Remove all objects from your current environment. Typing <code>x</code> on the console will give you an error.</p>
-
-<pre><code class="r">x &lt;- 5
-y &lt;- 7
-rm(list = ls())
-</code></pre>
-
-<p>Notice that we have <em>nested</em> one function inside of another.  </p>
-
-<hr/>
-
-<h3>Commenting code</h3>
-
-<ul>
-<li>Use <code>#</code> signs to comment. Anything to the right of a <code>#</code> is ignored by R. </li>
-<li>Comment liberally in your R scripts. </li>
-</ul>
-
-<pre><code class="r"># this is a comment for a section
-ls()  #to the left of this comment is a function
-</code></pre>
-
-<hr/>
-
-<p>In it&#39;s simplest form, R can be used as an interactive calculator. On the R console, type 5 + 7 and press Enter.
-Alternatively, if you are running this code from an R markdown script in RStudio, choose &ldquo;Code RunLines&rdquo; from the top menu or press ctrl-Enter. </p>
+<p>Alternatively, if you are running this code from an R markdown script in RStudio, place the cursor at the line you wish to run, and choose &ldquo;Code RunLines&rdquo; from the top menu or press ctrl-Enter. </p>
 
 <pre><code class="r">5 + 7
 </code></pre>
@@ -268,8 +227,6 @@ Alternatively, if you are running this code from an R markdown script in RStudio
 
 <p>Think of the assignment operator as an arrow. You are assigning the value on the right side of the arrow to the variable name on the left side of the arrow.</p>
 
-<hr/>
-
 <p>To assign the result of 5 + 7 to a new variable called x, you type x &lt;- 5 + 7. This can be read as &#39;x gets 5 plus 7&#39;. Let&#39;s give it a try.</p>
 
 <pre><code class="r">x &lt;- 5 + 7
@@ -279,22 +236,69 @@ Alternatively, if you are running this code from an R markdown script in RStudio
 
 <p>For clarity, you can include a single space on each side of the assignment operator, but do NOT put a space between the <code>&lt;</code> and the <code>-</code> that form the arrow.</p>
 
-<hr/>
-
 <p>To view the contents of the variable x, just type x and press Enter.</p>
 
 <pre><code class="r">x
 </code></pre>
 
-<p>Now, let&#39;s store the result of x - 3 in a new variable called y.</p>
+<p>A variable is just a name for a value, such as x, current_temperature, or subject_id. 
+We can create a variables with longer, more descriptive names.</p>
 
-<pre><code class="r">y &lt;- x - 3
+<pre><code class="r">weight_kg &lt;- 55
 </code></pre>
 
-<p>What is the value of y? We type y to find out.</p>
+<p>and do arithmetic with it:</p>
 
-<pre><code class="r">y
+<pre><code class="r">2.2 * weight_kg
 </code></pre>
+
+<p>We can use the function <code>paste</code> to print several things at once, if we separate them with commas.</p>
+
+<pre><code class="r">paste(&quot;weight in pounds:&quot;, 2.2 * weight_kg)
+</code></pre>
+
+<h3>Updating the values of variables</h3>
+
+<p>We can also change a variable&#39;s value by assigning it a new one:</p>
+
+<pre><code class="r">weight_kg &lt;- 57.5
+paste(&quot;weight in kilograms is now:&quot;, weight_kg)
+</code></pre>
+
+<p>If we imagine the variable as a sticky note with a name written on it, 
+assignment is like putting the sticky note on a particular value:</p>
+
+<p>This means that assigning a value to one variable does not change the values of other variables. 
+For example, let&#39;s calculate the subject&#39;s weight in pounds, and store in a variable:</p>
+
+<pre><code class="r">weight_lb &lt;- 2.2 * weight_kg
+paste(&quot;weight in kilograms:&quot;, weight_kg, &quot;and in pounds:&quot;, weight_lb)
+</code></pre>
+
+<p>and then change weight_kg:</p>
+
+<pre><code class="r">weight_kg &lt;- 100
+paste(&quot;weight in kilograms is now:&quot;, weight_kg, &quot;and weight in pounds is still:&quot;, 
+    weight_lb)
+</code></pre>
+
+<p><strong>Updating a Variable</strong></p>
+
+<p>Since weight_lb doesn&#39;t &ldquo;remember&rdquo; where its value came from, it isn&#39;t automatically updated when weight_kg changes. </p>
+
+<p>This is different from the way spreadsheets work.</p>
+
+<p>###Challenge</p>
+
+<p>Write down what values the variables refer to after each statement in the following program:</p>
+
+<pre><code class="r">mass &lt;- 47.5
+age &lt;- 122
+mass &lt;- mass * 2
+age &lt;- age - 20
+</code></pre>
+
+<h3>Vectors</h3>
 
 <p>Now, let&#39;s create a small collection of numbers called a <code>vector</code> (known as array in some other programming languages)</p>
 
@@ -330,25 +334,25 @@ Alternatively, if you are running this code from an R markdown script in RStudio
 <pre><code class="r">c(z, 555, z)
 </code></pre>
 
+<p>What happens here is that we take the original vector of weights, add a new value, and then the original vector values again. We can do this over and over again to build a vector or a dataset. As we program, this may be useful to update results that we are collecting or calculating.</p>
+
 <p>Numeric vectors can be used in arithmetic expressions. Type the following to see what happens: z * 2 + 100.</p>
 
-<pre><code class="r">z * 2 + 100
+<pre><code class="r">z
+z * 2 + 100
 </code></pre>
 
 <p>First, R multiplied each of the three elements in z by 2. Then it added 100 to each element to get the result you see above.</p>
 
-<p>Other common arithmetic operators are <code>+</code>, <code>-</code>, <code>/</code>, and <code>^</code> (where x<sup>2</sup> means &#39;x squared&#39;). 
-To take the square root, use the <code>sqrt()</code> function 
+<p>Other common arithmetic operators are <code>+</code>, <code>-</code>, <code>/</code>, and <code>^</code> (where x<sup>2</sup> means &#39;x squared&#39;). </p>
+
+<p>To take the square root, use the <code>sqrt()</code> function 
 For the absolute value, use the <code>abs()</code> function.</p>
 
 <p>Let&#39;s take the square root of z - 1 and assign it to a new variable called mySqrt.</p>
 
 <pre><code class="r">mySqrt &lt;- sqrt(z - 1)
 </code></pre>
-
-<p>Variable names are case-sensitive and you are creating a variable called mySqrt, so make sure the letter S is capitalized and everything else is lowercase.</p>
-
-<hr/>
 
 <p>Before we view the contents of the mySqrt variable, what do you think it contains?
 Think about how R handled the other &#39;vectorized&#39; operations: element-by-element.</p>
@@ -358,6 +362,8 @@ Think about how R handled the other &#39;vectorized&#39; operations: element-by-
 <li>a single number (i.e a vector of length 1)</li>
 <li>a vector of length 0 (i.e. an empty vector)</li>
 </ol>
+
+<p>Variable names are case-sensitive and you are creating a variable called mySqrt, so make sure the letter S is capitalized and everything else is lowercase.</p>
 
 <hr/>
 
@@ -386,8 +392,9 @@ Think about how R handled the other &#39;vectorized&#39; operations: element-by-
 <pre><code class="r">myDiv
 </code></pre>
 
-<p>When given two vectors of the same length, R sperforms the specified arithmetic operation (<code>+</code>, <code>-</code>, <code>*</code>, etc.) element-by-element.
-If the vectors are of different lengths, R &#39;recycles&#39; the shorter vector until it is the same length as the longer vector.</p>
+<p>When given two vectors of the same length, R sperforms the specified arithmetic operation (<code>+</code>, <code>-</code>, <code>*</code>, etc.) element-by-element.</p>
+
+<p>If the vectors are of different lengths, R &#39;recycles&#39; the shorter vector until it is the same length as the longer vector.</p>
 
 <p>When we did z * 2 + 100 in our earlier example, z was a vector of length 3, but technically 2 and 100 are each vectors of length 1.</p>
 

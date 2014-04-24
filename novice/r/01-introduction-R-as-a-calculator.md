@@ -6,7 +6,7 @@ This material combines materials from the Sofware Carpentry Bootcamp novice cour
 with slides from the interactive Swirl package (Nick Carchedi et al) https://github.com/swirldev/
 
 
-### The very basics of R
+### So, what is R?
 
 * R is a versatile, open source programming language
 * It's particularly well suited for statistics, data science and visualization
@@ -16,7 +16,6 @@ with slides from the interactive Swirl package (Nick Carchedi et al) https://git
 * Available on all platforms.
 * Is object oriented and functional.  
 
----
 
 ### Introduction to R and RStudio
 
@@ -25,59 +24,10 @@ _Point out the different windows in RStudio_
 * Code and workflow is more reproducible if we can document everything that we do.
 * Our end goal is not just to "do stuff" but to do it in a way that anyone can easily and exactly replicate our workflow and results.
 
----
-
-### First commands in R
-
-Some of the same commands we learned from the command line can be used in R. 
-List objects in your current environment
-
-
-```r
-ls()
-```
-
-
-Remove objects from your current environment.  
-
-
-```r
-x <- 5
-rm(x)
-```
-
-
-Remove all objects from your current environment. Typing `x` on the console will give you an error.
-
-
-```r
-x <- 5
-y <- 7
-rm(list = ls())
-```
-
-
-Notice that we have _nested_ one function inside of another.  
-
----
-
-### Commenting code
-
-* Use `#` signs to comment. Anything to the right of a `#` is ignored by R. 
-* Comment liberally in your R scripts. 
-
-
-```r
-# this is a comment for a section
-ls()  #to the left of this comment is a function
-```
-
-
----
-
 
 In it's simplest form, R can be used as an interactive calculator. On the R console, type 5 + 7 and press Enter.
-Alternatively, if you are running this code from an R markdown script in RStudio, choose "Code RunLines" from the top menu or press ctrl-Enter. 
+
+Alternatively, if you are running this code from an R markdown script in RStudio, place the cursor at the line you wish to run, and choose "Code RunLines" from the top menu or press ctrl-Enter. 
 
 
 ```r
@@ -97,7 +47,6 @@ Assigning a value to a variable in R is done via the assignment operator, which 
 
 Think of the assignment operator as an arrow. You are assigning the value on the right side of the arrow to the variable name on the left side of the arrow.
 
----
 
 To assign the result of 5 + 7 to a new variable called x, you type x <- 5 + 7. This can be read as 'x gets 5 plus 7'. Let's give it a try.
 
@@ -111,7 +60,6 @@ R did not print the result of 12 this time. When you use the assignment operator
 
 For clarity, you can include a single space on each side of the assignment operator, but do NOT put a space between the `<` and the `-` that form the arrow.
 
----
 
 To view the contents of the variable x, just type x and press Enter.
 
@@ -121,21 +69,87 @@ x
 ```
 
 
-Now, let's store the result of x - 3 in a new variable called y.
+
+A variable is just a name for a value, such as x, current_temperature, or subject_id. 
+We can create a variables with longer, more descriptive names.
 
 
 ```r
-y <- x - 3
+weight_kg <- 55
 ```
 
 
-What is the value of y? We type y to find out.
+and do arithmetic with it:
 
 
 ```r
-y
+2.2 * weight_kg
 ```
 
+
+We can use the function `paste` to print several things at once, if we separate them with commas.
+
+
+```r
+paste("weight in pounds:", 2.2 * weight_kg)
+```
+
+
+### Updating the values of variables
+
+We can also change a variable's value by assigning it a new one:
+
+
+```r
+weight_kg <- 57.5
+paste("weight in kilograms is now:", weight_kg)
+```
+
+
+If we imagine the variable as a sticky note with a name written on it, 
+assignment is like putting the sticky note on a particular value:
+
+This means that assigning a value to one variable does not change the values of other variables. 
+For example, let's calculate the subject's weight in pounds, and store in a variable:
+
+
+```r
+weight_lb <- 2.2 * weight_kg
+paste("weight in kilograms:", weight_kg, "and in pounds:", weight_lb)
+```
+
+
+and then change weight_kg:
+
+
+```r
+weight_kg <- 100
+paste("weight in kilograms is now:", weight_kg, "and weight in pounds is still:", 
+    weight_lb)
+```
+
+
+__Updating a Variable__
+
+Since weight_lb doesn't "remember" where its value came from, it isn't automatically updated when weight_kg changes. 
+
+This is different from the way spreadsheets work.
+
+###Challenge
+
+Write down what values the variables refer to after each statement in the following program:
+
+
+```r
+mass <- 47.5
+age <- 122
+mass <- mass * 2
+age <- age - 20
+```
+
+
+
+### Vectors
 
 Now, let's create a small collection of numbers called a `vector` (known as array in some other programming languages)
 
@@ -181,10 +195,14 @@ c(z, 555, z)
 ```
 
 
+
+What happens here is that we take the original vector of weights, add a new value, and then the original vector values again. We can do this over and over again to build a vector or a dataset. As we program, this may be useful to update results that we are collecting or calculating.
+
 Numeric vectors can be used in arithmetic expressions. Type the following to see what happens: z * 2 + 100.
 
 
 ```r
+z
 z * 2 + 100
 ```
 
@@ -192,6 +210,7 @@ z * 2 + 100
 First, R multiplied each of the three elements in z by 2. Then it added 100 to each element to get the result you see above.
 
 Other common arithmetic operators are `+`, `-`, `/`, and `^` (where x^2 means 'x squared'). 
+
 To take the square root, use the `sqrt()` function 
 For the absolute value, use the `abs()` function.
 
@@ -203,16 +222,14 @@ mySqrt <- sqrt(z - 1)
 ```
 
 
-Variable names are case-sensitive and you are creating a variable called mySqrt, so make sure the letter S is capitalized and everything else is lowercase.
-
----
-
 Before we view the contents of the mySqrt variable, what do you think it contains?
 Think about how R handled the other 'vectorized' operations: element-by-element.
 
 1. a vector of length 3
 2. a single number (i.e a vector of length 1)
 3. a vector of length 0 (i.e. an empty vector)
+
+Variable names are case-sensitive and you are creating a variable called mySqrt, so make sure the letter S is capitalized and everything else is lowercase.
 
 ---
 
@@ -249,6 +266,7 @@ myDiv
 
 
 When given two vectors of the same length, R sperforms the specified arithmetic operation (`+`, `-`, `*`, etc.) element-by-element.
+
 If the vectors are of different lengths, R 'recycles' the shorter vector until it is the same length as the longer vector.
 
 When we did z * 2 + 100 in our earlier example, z was a vector of length 3, but technically 2 and 100 are each vectors of length 1.

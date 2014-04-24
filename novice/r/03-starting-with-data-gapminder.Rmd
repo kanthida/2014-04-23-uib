@@ -1,0 +1,267 @@
+```{r, echo=FALSE}
+opts_chunk$set(results='hide')
+```
+
+03-starting-with-data-gapminder
+========================================================
+
+### We want to:
+
+* load that data into memory,
+* calculate the total population per year across all countries, and
+* plot the result.
+To do  that, we'll have to learn a little bit about programming.
+
+### Objectives
+* Read tabular data from a file into a program.
+* Assign values to variables.
+* Learn about data types
+* Select individual values and subsections from data.
+* Perform operations on arrays of data.
+* Display simple graphs.
+
+## Loading Data
+----------------
+
+To load our data, we need to locate our data.
+We will use `setwd()` and `read.csv()`. These are built-in functions in R. Let's check out the help screen.
+
+
+### Analyzing Gap Minder Data
+
+We will use the same data as we used in the Linux shell tutorial, derived from http://www.gapminder.org
+
+
+```{r}
+setwd("novice/r/")
+gapmindDataURL <- "http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt"
+read.delim(file = gapmindDataURL)
+```
+
+The expression `read.delim()` is a function call that asks R to run the function read.delim that belongs to base R. 
+
+`read.delim` has many parameters including the name of the file we want to read, and the delimiter that separates values on a line. 
+These both need to be character strings (or strings for short), so we put them in quotes. 
+`header` tells the program if the first line contains column names or data.
+
+When we are finished typing and press `Control+Enter` on Windows or `Cmd + Return` on Mac, the console runs our command. 
+Since we haven't told it to do anything else with the function's output, the console displays it. 
+In this case, that output is the data we just loaded. 
+
+Our call to `read.csv` read our file, but didn't save the data in memory. 
+To do that, we need to assign the data frame to a variable. 
+
+```{r}
+dat <- read.delim(file = gapmindDataURL)
+data <- dat #hack
+```
+
+This statement doesn't produce any output because assignment doesn't display anything. If we want to check that our data has been loaded, we can print the variable's value:
+
+```{r}
+head(dat)
+```
+
+__BREAK__
+* Make sure everyone has imported the data
+* tell me how many rows and columns there are
+* what kind of data is it?
+
+
+## Manipulating Data
+
+Now that our data is in memory, we can start doing things with it. 
+First, let's ask what type of thing data refers to:
+
+```{r}
+class(dat)
+str(dat)
+summary(dat)
+```
+
+The output tells us that data currently is a data.frame in R. 
+This is similar to a spreadsheet in excel, that many of us are familiar with using.
+
+We can see what its shape is like this:
+
+```{r}
+dim(dat)
+nrow(dat)
+ncol(dat)
+```
+
+This tells us that data has 1704 rows and 6 columns. 
+
+### Indexing and subsetting data
+
+If we want to get a single value from the data frame, 
+we must provide an index of row,column in square brackets:
+
+```{r}
+paste('first value in data:', dat[1,1])
+```
+
+
+An index like [1, 1] selects a single element of an array, 
+but we can select whole sections as well. 
+For example, we can select the values for the first four (rows) like this:
+
+```{r}
+dat[1:4,]
+```
+
+The slice 1:4 means, "Start at index 1 and go to index 4." 
+
+We can also take a set of arbitrary rows.
+Here, we use the built-in function seq to take regularly spaced rows.
+
+```{r}
+dat[seq(1, 12, 3),]
+```
+
+Seq includes the lower bound, and stops when the upper bound is reached or crossed.
+
+We can also select a subset of columns
+```{r}
+# by position (from left to right)
+dat[1:5,1]
+
+# by name
+dat[1:5,c('year','lifeExp')]
+```
+
+There are lots of useful built-in commands that we can use in R:
+
+```{r}
+paste('maximum population size:', max(dat[,'pop']))
+paste('minimum population size:', min(dat[,'pop']))
+paste('standard deviation:', sd(dat[,'pop']))
+```
+
+When analyzing data, though, we often want to look at partial statistics, such as the maximum value per patient or the average value per day. 
+One way to do this is to select the data we want to create a new temporary array, then ask it to do the calculation:
+
+```{r}
+
+population <- dat[,'pop' ] # values in the column "pop", all rows
+paste('maximum value for population size:', max(population))
+```
+
+We don't actually need to store the column in a variable of its own. 
+Instead, we can combine the selection and the method call:
+
+```{r}
+max(dat[,'pop'])
+```
+
+__EXERCISE__
+
+1. If data holds our array of gapminder data, what does `data[3:3, 4:4]` produce? 
+What about `data[4:1,]`? Explain the results to the person sitting next to you
+
+---
+There another way to get named columns, using the dollar sign
+```{r selectColumnByName}
+head(data$country)
+```
+
+We can also subset data based on the values meeting given criteria. Remember 'grep' from the linux exercise?
+Here we use the operator == to check if values are identical
+
+```{r subsetByValue}
+data[data$country=="Norway",]
+data[data$country=="Norway" & data$year > 1990,]
+
+data[with(data,country=="Norway" & year > 1990),]
+```
+
+What's going on there? Each comparison (==, >) generates a logical vector!
+TRUE, FALSE.. one value for each row.
+TRUE means the values on that row satisfies the criteria given. Then those are used as indexes to select the corresponding rows from data.
+
+```{r}
+data$year>1990
+```
+
+## Using FUNCTIONS to perform operations across groups
+
+### Analysis over groups: split, tapply
+
+Suppose we need to calculate the mean population size for each country, across all years? 
+We could start by splitting the population vector into a list of population vectors divided by country.
+
+`split` is a useful function for breaking up a vector into groups defined by a second vector, typically a factor.
+We can then use the `lapply` function to calculate the average of each element of the list, which are vectors of pop sizes.
+
+```{r}
+sp <- split(data$pop, data$country)
+sp
+lapply(sp, mean)
+```
+
+lapply is an example of a functional call, where we send a function to be applied across a dataset.
+
+A shortcut for this is to use `tapply` and give the function which should run on each element of the list as a third argument:
+
+```{r}
+tapply(data$pop, data$country, mean)
+```
+
+### Challenge  
+1. Use tapply to find the maximum and minimum values for population each year.
+2. Save these values to two varibles (one for min, one for max).
+3. What kind of variables are these?
+
+```{r, echo=FALSE}
+max_popsize <- tapply(data$pop, data$year, max)
+min_popsize <- tapply(data$pop, data$year, min)
+length(max_popsize)
+length(min_popsize)
+max_popsize
+min_popsize
+
+```
+
+#plot data
+
+```{r}
+
+# the gapminder data is quite large, 
+# let's subset the data to only hold information from 1982
+data.1982 = data[data$year==1982,]
+
+#now
+plot(lifeExp ~ gdpPercap, data.1982, log="x")
+fit=lm(lifeExp ~ log10(gdpPercap),data.1982)
+abline(fit)
+summary(fit)
+
+boxplot(lifeExp ~ continent, data.1982)
+
+boxplot(lifeExp ~ continent, data.1982,horizontal=TRUE)
+
+```
+
+### Exercise
+
+plot(gdpPercap ~ year, data[data$continent=="Europe",])
+
+Plot the gdp per capita (gdpPerCap) as a function of time, for european countries
+
+#stats?
+```{r}
+
+lifeExp_africa <- data.1982[data.1982$continent=="Africa",'lifeExp']
+lifeExp_americas <- data.1982[data.1982$continent=="Americas",'lifeExp']
+
+#is this normally distributed?
+qqnorm(lifeExp_africa)
+qqline(lifeExp_africa, col = 2)
+
+qqnorm(lifeExp_americas)
+qqline(lifeExp_americas, col = 2)
+
+t.test(lifeExp_africa,lifeExp_americas)
+wilcox.test(lifeExp_africa,lifeExp_americas) #robust comparison
+```
+

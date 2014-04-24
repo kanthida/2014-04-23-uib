@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="x-ua-compatible" content="IE=9" >
 
-<title>Creating Functions</title>
+<title>Functions</title>
 
 <style type="text/css">
 body, td {
@@ -179,22 +179,29 @@ hljs.initHighlightingOnLoad();
 </head>
 
 <body>
-<h1>Creating Functions</h1>
-
-<p>If we only had one data set to analyze, it would probably be faster to load the file into a spreadsheet and use that to plot some simple statistics. 
-But we have twelve files to check, and may have more in future. In this lesson, we&#39;ll learn how to write a function so that we can repeat several operations with a single command.</p>
+<h1>Functions</h1>
 
 <h2>Objectives</h2>
 
 <ul>
 <li>Define a function that takes parameters.</li>
 <li>Return a value from a function.</li>
-<li>Test and debug a function.</li>
-<li>Explain what a call stack is, and trace changes to the call stack as functions are called.</li>
 <li>Set default values for function parameters.</li>
 <li>Explain why we should divide programs into small, single-purpose functions.</li>
-<li>Defining a Function</li>
 </ul>
+
+<h3>Motivation</h3>
+
+<p>If we only had one data set to analyze, it would probably be faster to load the file into a spreadsheet and use that to plot some simple statistics. </p>
+
+<p>But we have twelve files to check, and may have more in future. In this lesson, we&#39;ll learn how to write a function so that we can repeat several operations with a single command.</p>
+
+<h3>Definition</h3>
+
+<p>A function is a saved object that takes inputs to perform a task. 
+Functions take in information and return desired outputs.</p>
+
+<p>output = name_of_function(inputs)</p>
 
 <p>Let&#39;s start by defining a function <code>fahr_to_kelvin</code> that converts temperatures from Fahrenheit to Kelvin:</p>
 
@@ -224,9 +231,7 @@ paste(&quot;boiling point of water:&quot;, fahr_to_kelvin(212))
 <pre><code class="r">fahr_to_kelvin(32)
 </code></pre>
 
-<p>Will return nothing.</p>
-
-<h1>&ndash;&gt; In Python lessons, now would come debugging…</h1>
+<p>Will return nothing, because we have assigned the value to a variable inside the function, instead of outputting it from the function</p>
 
 <h2>Composing Functions</h2>
 
@@ -251,8 +256,11 @@ paste(&quot;absolute zero in Celsius:&quot;, kelvin_to_celsius(0))
 paste(&quot;freezing point of water in Celsius:&quot;, fahr_to_celsius(32))
 </code></pre>
 
-<p>This is our first taste of how larger programs are built: we define basic operations, then combine them in ever-large chunks to get the effect we want. 
-Real-life functions will usually be larger than the ones shown here—typically half a dozen to a few dozen lines—but they shouldn&#39;t ever be much longer than that, or the next person who reads it won&#39;t be able to understand what&#39;s going on. <strong>Modular programming</strong></p>
+<p>This is our first taste of how larger programs are built: we define basic operations, then combine them in ever-large chunks to get the effect we want. </p>
+
+<p>Real-life functions will usually be larger than the ones shown here—typically half a dozen to a few dozen lines—but they shouldn&#39;t ever be much longer than that, or the next person who reads it won&#39;t be able to understand what&#39;s going on. </p>
+
+<p><strong>Modular programming</strong></p>
 
 <h3>Challenges</h3>
 
@@ -264,53 +272,6 @@ Real-life functions will usually be larger than the ones shown here—typically 
 
 <pre><code>fence(&#39;name&#39;, &#39;*&#39;)
 *name*
-</code></pre>
-
-<h2>String splits</h2>
-
-<p>If the variable s refers to a string, then we can parse the string into its separate components - each of the characters. Base R has a function called <code>strsplit</code> that can be used to break up strings, into smaller chunks. </p>
-
-<pre><code class="r">pangram &lt;- &quot;the quick brown fox jumps over the lazy dog&quot;
-strsplit(pangram, &quot; &quot;)
-</code></pre>
-
-<p>The output from strsplit is in a <code>list</code>. 
-Notice that the unusual first line of strsplit()’s output consists of [[1]]. 
-Similar to the way that R displays vectors, [[1]] means that R is showing the first element of a list. 
-Lists are extremely important concepts in R; they allow you to combine all kinds of variables.
-For example, a list can be made up of many elements, and elements could be vectors, dataframes, or matrices. </p>
-
-<p>In this example, this list has only a single element. Yes, that’s right: The list has one element, but that element is a vector.</p>
-
-<p>To extract an element from a list, you have to use double square brackets. 
-Split your pangram into words, and assign the first element to a new variable called words, using double-square-brackets <code>[[]]</code> subsetting, as follows:</p>
-
-<pre><code class="r">words &lt;- strsplit(pangram, &quot; &quot;)[[1]]
-</code></pre>
-
-<p>We can then pull out the different words using our indexing, where words[1] is the first element in the vector of words and words [9] would be our last:</p>
-
-<pre><code class="r">words[2]
-words[9]
-</code></pre>
-
-<ol>
-<li>Write a function called <code>out</code> that returns a string made up of just the first and last characters of its input. a) Outline the steps you need to take to write this function. Discuss with the person sitting next you. b) Write part of the code, make sure it works. c) Write the next step. d) test your function. e) can your function handle words of different lengths?</li>
-</ol>
-
-<pre><code class="r">out &lt;- function(word) {
-    letter &lt;- strsplit(word, &quot;&quot;)[[1]]
-    abbrev &lt;- paste(letter[1], letter[length(letter)], sep = &quot;&quot;)
-    abbrev
-}
-
-out(&quot;helium&quot;)
-</code></pre>
-
-<p><strong>Making our function work with different inputs</strong>. If we want just the last word, but we can&#39;t remember how long our sentence is, we can use <code>length()</code></p>
-
-<pre><code class="r">length(words)
-words[length(words)]
 </code></pre>
 
 <p><strong>BREAK</strong></p>

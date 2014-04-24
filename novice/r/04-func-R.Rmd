@@ -1,20 +1,29 @@
+
 ```{r, echo=FALSE}
 opts_chunk$set(results='hide')
 ```
-# Creating Functions
-
-If we only had one data set to analyze, it would probably be faster to load the file into a spreadsheet and use that to plot some simple statistics. 
-But we have twelve files to check, and may have more in future. In this lesson, we'll learn how to write a function so that we can repeat several operations with a single command.
+# Functions
 
 ## Objectives
 
 * Define a function that takes parameters.
 * Return a value from a function.
-* Test and debug a function.
-* Explain what a call stack is, and trace changes to the call stack as functions are called.
 * Set default values for function parameters.
 * Explain why we should divide programs into small, single-purpose functions.
-* Defining a Function
+
+
+### Motivation
+
+If we only had one data set to analyze, it would probably be faster to load the file into a spreadsheet and use that to plot some simple statistics. 
+
+But we have twelve files to check, and may have more in future. In this lesson, we'll learn how to write a function so that we can repeat several operations with a single command.
+
+### Definition
+
+A function is a saved object that takes inputs to perform a task. 
+Functions take in information and return desired outputs.
+
+output = name_of_function(inputs)
 
 Let's start by defining a function `fahr_to_kelvin` that converts temperatures from Fahrenheit to Kelvin:
 
@@ -48,11 +57,7 @@ Now typing
 fahr_to_kelvin(32)
 ```
 
-Will return nothing.
-
---> In Python lessons, now would come debugging…
-==============================
-
+Will return nothing, because we have assigned the value to a variable inside the function, instead of outputting it from the function
 
 ## Composing Functions
 
@@ -80,7 +85,10 @@ paste('freezing point of water in Celsius:', fahr_to_celsius(32.0))
 ```
 
 This is our first taste of how larger programs are built: we define basic operations, then combine them in ever-large chunks to get the effect we want. 
-Real-life functions will usually be larger than the ones shown here—typically half a dozen to a few dozen lines—but they shouldn't ever be much longer than that, or the next person who reads it won't be able to understand what's going on. __Modular programming__
+
+Real-life functions will usually be larger than the ones shown here—typically half a dozen to a few dozen lines—but they shouldn't ever be much longer than that, or the next person who reads it won't be able to understand what's going on. 
+
+__Modular programming__
 
 
 ### Challenges
@@ -99,55 +107,6 @@ fence('name', '*')
 *name*
 ```
 
-## String splits
-
-If the variable s refers to a string, then we can parse the string into its separate components - each of the characters. Base R has a function called `strsplit` that can be used to break up strings, into smaller chunks. 
-
-```{r}
-pangram <- "the quick brown fox jumps over the lazy dog"
-strsplit(pangram, " ")
-```
-		
-The output from strsplit is in a `list`. 
-Notice that the unusual first line of strsplit()’s output consists of [[1]]. 
-Similar to the way that R displays vectors, [[1]] means that R is showing the first element of a list. 
-Lists are extremely important concepts in R; they allow you to combine all kinds of variables.
-For example, a list can be made up of many elements, and elements could be vectors, dataframes, or matrices. 
-
-In this example, this list has only a single element. Yes, that’s right: The list has one element, but that element is a vector.
-
-To extract an element from a list, you have to use double square brackets. 
-Split your pangram into words, and assign the first element to a new variable called words, using double-square-brackets `[[]]` subsetting, as follows:
-
-```{r}
-words <- strsplit(pangram, " ")[[1]]
-```
-
-We can then pull out the different words using our indexing, where words[1] is the first element in the vector of words and words [9] would be our last:
-
-```{r}
-words[2]
-words[9]
-```
-
-1. Write a function called `out` that returns a string made up of just the first and last characters of its input. a) Outline the steps you need to take to write this function. Discuss with the person sitting next you. b) Write part of the code, make sure it works. c) Write the next step. d) test your function. e) can your function handle words of different lengths?
-
-```{r}
-out <- function(word) {
-    letter  <- strsplit(word, "")[[1]]
-    abbrev  <- paste(letter[1], letter[length(letter)], sep="")
-    abbrev
-}
-
-out('helium')
-```
-
-__Making our function work with different inputs__. If we want just the last word, but we can't remember how long our sentence is, we can use `length()`
-
-```{r}
-length(words)
-words[length(words)]
-```
 
 __BREAK__
 

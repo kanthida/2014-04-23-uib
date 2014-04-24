@@ -1,0 +1,246 @@
+### Plotting data from gapminder
+
+Now we're going to use data from the gapminder project, which gathers together a wide arrange of metrics for countries of the world. We're going to use a subset of data from this project which includes average life expectancy and GDP per capita on 5-year intervals from last 50 years. This is a nice plot of the data that we're going to work towards recreating in R.
+
+```{r}
+plot(lifeExp ~ gdpPercap, data.1982, log="x")
+```
+
+Plot the points so that their radius is proportional to population size:
+
+## Scale population size to be in the range of [0,1]
+```{r}
+p <- (data.1982$pop - min(data.1982$pop)) /
+  (max(data.1982$pop) - min(data.1982$pop))
+```
+
+## Convert to [0.2, 10] (for visibility)
+```{r}
+cex <- 0.2 + p * (10 - 0.2)
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex)
+```
+What are those log and cex parameters?
+
+```{r}
+?plot
+```
+
+It might be nicer if we scaled against square-root of population size, so that area became proportional to population size instead of radius (easier to interpret):
+
+```{r}
+tmp <- sqrt(data.1982$pop)
+p <- (tmp - min(tmp)) /
+  (max(tmp) - min(tmp))
+cex <- 0.2 + p * (10 - 0.2)
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex)
+```
+
+By this point, it's probably apparent that if we have lots of things like that flopping around in our code, things are going to messy and hard to read quickly. Some way of taking a vector of numbers and rescaling them to lie within some new range is called for.
+
+```{r}
+rescale <- function(x, r.out) {
+  p <- (x - min(x)) / (max(x) - min(x))
+  r.out[[1]] + p * (r.out[[2]] - r.out[[1]])
+}
+```
+
+This code now does exactly the same thing as the previous block, but captures more of the what than the how. We could completely rework the definition of rescale and this block of code will not change.
+
+```{r}
+cex <- rescale(sqrt(data.1982$pop), c(0.2, 10))
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex)
+```
+
+In the original gapminder plots, countries are coloured by continent. The continent definitions are different in the data set that we have, but we can do basically the same thing.
+
+Here is a small named vector mapping continents to colours:
+
+```{r}
+col.table <- c(Asia="tomato",
+               Europe="chocolate4",
+               Africa="dodgerblue2",
+               Americas="darkgoldenrod1",
+               Oceania="green4")
+str(col.table)
+```
+
+Now, we need to map colors to countries.
+We can do this by selecting colors by their names:
+
+```{r}
+col.table
+col.table[data.1982$continent]
+unname(col.table[data.1982$continent])
+```
+
+(the unname bit removes the continent names from the resulting vector again).
+
+We can wrap this up nicely in a function:
+
+```{r}
+colour.by.category <- function(x, table) {
+  unname(table[x])
+}
+```
+
+Note that this is longer than the function definition! But it captures intent better.
+
+col <- colour.by.category(data.1982$continent, col.table)
+cex <- rescale(sqrt(data.1982$pop), c(0.2, 10))
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex, col=col, pch=21, lwd=2.5)
+
+
+Let's say we want to add a linear trendline to the plot.
+
+(This example is a bit tricky; R's formula (y ~ x) does lots of magic work, and wrapping this up with functions can be a bit hard.)
+
+(The other bit of magic here is the ellipsis argument. In the practical, work up to this by passing in nothing and then look at how ellipsis is useful)
+
+add.trend.line <- function(x, y, d, ...) {
+  fit <- lm(d[[y]] ~ log10(d[[x]]))
+  abline(fit, ...)
+}
+
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex, col=col, pch=21, lwd=2.5)
+add.trend.line("gdpPercap", "lifeExp", data.1982)
+add.trend.line("gdpPercap", "lifeExp", data.1982, lwd=2)
+add.trend.line("gdpPercap", "lifeExp", data.1982, lwd=2, lty=2, col="blue")
+
+Now that we have this function, we can do all sorts of fun things with it:
+
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex, col=col, pch=21)
+add.trend.line("gdpPercap", "lifeExp", data.1982[data.1982$continent == "Asia",], col=col.table["Asia"])
+add.trend.line("gdpPercap", "lifeExp", data.1982[data.1982$continent == "Africa",], col=col.table["Africa"])
+add.trend.line("gdpPercap", "lifeExp", data.1982[data.1982$continent == "Europe",], col=col.table["Europe"])
+add.trend.line("gdpPercap", "lifeExp", data.1982[data.1982$continent == "Americas",], col=col.table["Americas"])
+add.trend.line("gdpPercap", "lifeExp", data.1982[data.1982$continent == "Oceania",], col=col.table["Oceania"])
+
+Which still looks a bit ugly. Could be nicer with another function:
+
+add.continent.trend.line <- function(x, y, d, continent, col.table, ...)
+  add.trend.line(x, y, d[d$continent == continent,], col=col.table[continent], ...)
+
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex, col=col, pch=21)
+add.continent.trend.line("gdpPercap", "lifeExp", data.1982, "Asia", col.table)
+add.continent.trend.line("gdpPercap", "lifeExp", data.1982, "Africa", col.table)
+add.continent.trend.line("gdpPercap", "lifeExp", data.1982, "Europe", col.table)
+add.continent.trend.line("gdpPercap", "lifeExp", data.1982, "Americas", col.table)
+add.continent.trend.line("gdpPercap", "lifeExp", data.1982, "Oceania", col.table)
+
+
+For throwaways like this we might use global variables but beware here. This is only OK when you use the function immediately upon creation and never again:
+
+f <- function(continent)
+  add.continent.trend.line("gdpPercap", "lifeExp", data.1982, continent, col.table)
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex, col=col, pch=21)
+f("Africa")
+f("Asia")
+f("Europe")
+f("Americas")
+f("Oceania")
+
+
+One of the nice things about this sort of approach is that we've not really specified how things have happened. So we're free to swap out the details.
+
+add.trend.line <- function(x, y, d, ...) {
+  lx <- log10(d[[x]])
+  fit <- lm(d[[y]] ~ lx)
+  xr <- range(lx)
+  lines(10^xr, predict(fit, list(lx=xr)), ...)
+}
+
+When we rerun this, we now get nicely clipped lines; but we didn't change anything else! This is one of the big benefits of working with some level of abstraction.
+
+f <- function(continent)
+  add.continent.trend.line("gdpPercap", "lifeExp", data.1982, continent, col.table)
+plot(lifeExp ~ gdpPercap, data.1982, log="x", cex=cex, col=col, pch=21)
+f("Africa")
+f("Asia")
+f("Europe")
+f("Americas")
+f("Oceania")
+
+
+
+Another example - population growth over time.
+
+pop.by.country.relative <- function(country, data, base.year=1952) {
+  dsub <- data[data$country == country, c("year", "pop")]
+  dsub$pop.rel <- dsub$pop / dsub$pop[dsub$year == base.year]
+  dsub
+}
+
+Can use this to plot relative growth trajectories over time:
+
+plot(pop.rel ~ year, pop.by.country.relative("India", dat), type="o")
+lines(pop.rel ~ year, pop.by.country.relative("Australia", dat), type="o", col="green4")
+lines(pop.rel ~ year, pop.by.country.relative("China", dat), type="o", col="red")
+
+
+General points:
+Qu: Do we need to know how a function works to use it?
+
+No, difference between what and implementation.
+
+But you do need to know that function is working as it should.
+
+Workflow for developing functions
+
+* Identify what you want to achieve
+- Code it up in global environment
+- Move into function
+- Debug
+
+Qu: My function is only one line - is this useful?
+
+Yes: More readable, less code when using repeatedly --> Don't Repeat Yourself
+
+Yes: Your program becomes defined around the "what" and not the "how". It might be that you move to using some other implementation, but your function will still work.
+
+What makes for a good function?
+
+- It's short
+- Performs a single operation
+
+Has an informative name and argument names
+
+
+## Key Points
+
+* Import a library into a program using library libraryname.
+* What are the data types in R?
+* Use `variable = value` to assign a value to a variable in order to record it in memory.
+* Variables are created on demand whenever a value is assigned to them.
+* Use print something to display the value of something.
+* The expression `dim()` gives the dimensions of a data frame or matrix.
+* Use `object[x, y]` to select a single element from an array.
+* Array indices start at 1.
+* Use low:high to specify a slice that includes the indices from low to high.
+* Use # some kind of explanation to add comments to programs.
+* Use `mean()`, `max()`, `min()` and `sd()` to calculate simple statistics.
+* Update vectors using append
+* Write a simple for loop 
+* Use base R and the `ggplot2` library for creating simple visualizations.
+
+## Next Steps
+
+Our work so far has convinced us that something's wrong with our first data file. We would like to check the other 11 the same way, but typing in the same commands repeatedly is tedious and error-prone. Since computers don't get bored (that we know of), we should create a way to do a complete analysis with a single command, and then figure out how to repeat that step once for each file. These operations are the subjects of the next two lessons.
+
+
+
+
+
+
+
+```{r linearModel_teacherNotes}
+data.1982 <- data[data$year == 1982,]
+
+y <- data.1982$lifeExp
+x <- log(data.1982$gdpPercap)
+X <- cbind(1, x)
+c(solve(t(X) %*% X) %*% t(X) %*% y)
+
+fit <- lm(lifeExp ~ log(gdpPercap), data.1982)
+coef(fit)
+```
+
